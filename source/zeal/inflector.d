@@ -16,6 +16,9 @@ NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FO
 OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 +/
+/**
+ *
+ */
 module zeal.inflector;
 
 import std.algorithm;
@@ -25,8 +28,9 @@ import std.conv;
 import std.range;
 import std.string;
 
-import zeal.utils.singleton;
-
+/**
+ *
+ */
 string camelize ( string src, bool upperFirst = true ) {
 	auto app = appender!string();
 	bool beginning = upperFirst;
@@ -48,23 +52,62 @@ string camelize ( string src, bool upperFirst = true ) {
 	return app.data;
 }
 
+/**
+ *
+ */
 string childize ( string src ) {
 	auto offset = src.retro().countUntil( '.' );
 	return src[ $ - offset .. $ ];
 }
 
+/**
+ *
+ */
 string classify ( string src ) {
-	return camelize( singularize( src ) );
+	return src.singularize().camelize();
 }
 
+/**
+ *
+ */
+string controllerize ( string src ) {
+	return src.camelize().pluralize() ~ "Controller";
+}
+
+/**
+ *
+ */
 string dasherize ( string src ) {
 	return src.replace( "_", "-" );
 }
 
-string foreignKey ( string src, string sep = "_" ) {
-	return singularize( modulize( src ).toLower() ) ~ sep ~ "id";
+/**
+ *
+ */
+string decamelize ( string src ) {
+	auto app = appender!string();
+	size_t pos;
+	foreach ( i, char c; src ) {
+		if ( isUpper( c ) && i > 0 ) {
+			app.put( src[ pos .. i ].toLower() );
+			app.put( "_" );
+			pos = i;
+		}
+	}
+	app.put( src[ pos .. $ ].toLower() );
+	return app.data;
 }
 
+/**
+ *
+ */
+string foreignKey ( string src, string sep = "_" ) {
+	return src.modulize().toLower().singularize() ~ sep ~ "id";
+}
+
+/**
+ *
+ */
 string humanize ( string src ) {
 	auto atoms = src.split( "_" );
 	if ( atoms[ $ - 1 ] == "id" ) {
@@ -74,11 +117,17 @@ string humanize ( string src ) {
 	return atoms.join( " " );
 }
 
+/**
+ *
+ */
 string modulize ( string src ) {
 	auto offset = src.retro().countUntil( '/' );
 	return src[ $ - offset .. $ ];
 }
 
+/**
+ *
+ */
 string ordinalize ( long n ) {
 	immutable SUFF = [ "th", "st", "nd", "rd" ];
 	auto result = to!string( n );
@@ -92,16 +141,34 @@ string ordinalize ( long n ) {
 	return result;
 }
 
+/**
+ *
+ */
 string packagize ( string src ) {
 	auto offset = 1 + src.retro().countUntil( '/' );
 	return src[ 0 .. $ - offset ];
 }
 
+/**
+ *
+ */
 string parentize ( string src ) {
 	auto offset = 1 + src.retro().countUntil( '.' );
 	return src[ 0 .. $ - offset ];
 }
 
+/**
+ *
+ */
+string pluralize ( string src ) {
+	//TODO
+	return src;
+}
+
+/**
+ *
+ */
 string singularize ( string src ) {
+	//TODO
 	return src;
 }
