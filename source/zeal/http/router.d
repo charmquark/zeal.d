@@ -24,7 +24,8 @@ module zeal.http.router;
 import std.metastrings;
 import std.string;
 
-import vibe.d;
+import vibe.http.router;
+import vibe.http.server;
 
 import zeal.inflector;
 
@@ -45,8 +46,8 @@ class ZealRouter : UrlRouter {
 	/**
 	 *
 	 */
-	final @property void match ( string _Path, string _C_A, string _Via_ = "get" ) () 
-	if ( _Via_ == "delete" || _Via_ == "delete_" || _Via_ == "get" || _Via_ == "post" || _Via_ == "put" ) {
+	final @property typeof( this ) match ( string _Path, string _C_A, string _Via_ = "any" ) () 
+	if ( _Via_ == "delete" || _Via_ == "delete_" || _Via_ == "get" || _Via_ == "post" || _Via_ == "put" || _Via_ == "any" ) {
 		enum _Module		= _C_A.parentize();
 		enum _Controller	= _Module.camelize();
 		enum _Action		= _C_A.childize();
@@ -66,12 +67,13 @@ class ZealRouter : UrlRouter {
 			_Path, _C_A,
 			_Via, _Path
 		));
+		return this;
 	}
 	
 	/**
 	 *
 	 */
-	final @property void resource ( _C : Controller ) ( _C c ) {
+	final @property typeof( this ) resource ( _C : Controller ) ( _C c ) {
 		enum _Base	= "/" ~ _C.stringof[ 0 .. $ - 10 ].decamelize();
 		enum _New	= _Base ~ "/new";
 		enum _ID 	= _Base ~ "/:id";
@@ -88,10 +90,11 @@ class ZealRouter : UrlRouter {
 		static if ( is( typeof( c.route( this ) ) ) ) {
 			c.route( this );
 		}
+		return this;
 	}
 
 	///ditto
-	final @property void resource ( string _R ) () {
+	final @property typeof( this ) resource ( string _R ) () {
 		enum _Module		= _R;
 		enum _Controller	= _Module.capitalize();
 		
@@ -103,23 +106,26 @@ class ZealRouter : UrlRouter {
 			_Module,
 			_Controller
 		));
+		return this;
 	}
 	
 	/**
 	 *
 	 */
-	final @property void root () ( action cb ) {
-		get( "/", cb );
+	final @property typeof( this ) root ( string _Via = "any" ) ( action cb ) {
+		mixin(Format!(
+			q{
+				%s( "/", cb );
+			},
+			_Via
+		));
+		return this;
 	}
 
 	///ditto
-	final @property void root ( string _C_A ) () {
-		root!( "get", _C_A );
-	}
-	
-	///ditto
-	final @property void root ( string _Via, string _C_A ) () {
+	final @property typeof( this ) root ( string _C_A, string _Via = "any" ) () {
 		match!( "/", _C_A, _Via );
+		return this;
 	}
 	
 } // end class ZealRouter
