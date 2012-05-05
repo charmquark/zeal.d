@@ -31,6 +31,7 @@ import std.string;
 import vibe.http.router;
 import vibe.http.server;
 
+import zeal.config;
 import zeal.inflector;
 
 import zeal.base.controller;
@@ -43,7 +44,9 @@ import zeal.utils.singleton;
 class ZealRouter : UrlRouter {
 	mixin Singleton;
 	
-	private this () {}
+	private this () {
+		mixin ConfigRoutes!( ZealConfig!`resources` );
+	}
 
 	alias void delegate ( HttpServerRequest, HttpServerResponse ) action;
 	
@@ -133,3 +136,19 @@ class ZealRouter : UrlRouter {
 	}
 	
 } // end class ZealRouter
+
+
+/**
+ *
+ */
+mixin template ConfigRoutes ( alias _List ) {
+	static if ( _List.length > 0 ) {
+		mixin(Format!(
+			q{
+				resource!"%s";
+			},
+			_List[ 0 ]
+		));
+		mixin ConfigRoutes!( _List[ 1 .. $ ] );
+	}
+}

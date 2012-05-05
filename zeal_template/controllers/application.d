@@ -20,17 +20,73 @@
     //  OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                         //
     ////////////////////////////////////////////////////////////////////////////////////////////
 
-module controllers.pages;
+module controllers.application;
 
 import zeal.zeal;
 
-final class PagesController : ApplicationController {
-	mixin Standard!( false );
-	
-private:
+abstract class ApplicationController : Controller {
 
-	final void doHome ( Request req, Response res ) {
-		res.render!( "pages/home.dt" )();
+	protected this () {
 	}
+	
+}
+
+/+
+	New Controllers are written by subclassing your ApplicationController, each in their own
+	module.  For example, given a Thing resource you might write a RESTful controller like so:
+	
+		module controllers.things;
+		
+		import models.thing; // this implementation is not yet part of Zeal
+		
+		final class ThingsController : ApplicationController {
+			mixin Standard;
+			
+		private:
+		
+			final void doNew ( Request req, Resposne res ) {
+				//...
+			}
+		
+			final void doCreate ( Request req, Resposne res ) {
+				//...
+			}
+		
+			final void doIndex ( Request req, Resposne res ) {
+				//...
+			}
+		
+			final void doShow ( Request req, Resposne res ) {
+				//...
+			}
+		
+			final void doEdit ( Request req, Resposne res ) {
+				//...
+			}
+		
+			final void doUpdate ( Request req, Resposne res ) {
+				//...
+			}
+		
+			final void doDestroy ( Request req, Resposne res ) {
+				//...
+			}
+		
+		}
+	
+	To route this resource you might either edit your config module like this:
+		
+		enum resources = [ "things" ];
+	
+	Or you can route it from your app module:
+	
+		static this () {
+			auto app = ZealApplication();
+			
+			with ( app.router ) {
+				resource!"things";
+			}
+		}
 
 }
++/

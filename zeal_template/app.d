@@ -20,43 +20,15 @@
     //  OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                         //
     ////////////////////////////////////////////////////////////////////////////////////////////
 
-/**
- *
- */
-module config;
+module app;
 
-/**
- * Primary binding address.
- * Default is "127.0.0.1".
- */
-// enum address = ;
+import zeal.d;
 
-/**
- * Custom inflections.
- * Each entry should be a pair of elements in the order "singular","plural".  For example:
- * ---
- * enum inflections = [
- *   "cactus", "cacti",
- *   "child", "children",
- *   "formula", "formulae"
- * ]
- * ---
- */
-enum inflections = [
-	"child", "children"
-];
+static this () {
+	auto app = ZealApplication();
+	
+	with ( app.router ) {
+		//root!`RESOURCE.ACTION`;
+	}
+}
 
-/**
- * HTTP listener port.
- * The default is 8080.
- */
-//enum port = ;
-
-/**
- * Automatically routed resources.
- * Each element should be the canonical (lowercase and plural) resource name.  For example:
- * ---
- * enum resources = [ "users", "posts" ];
- * ---
- */
-//enum resources = [  ];

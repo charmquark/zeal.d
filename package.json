@@ -1,0 +1,14 @@
+{
+	"name": "zeal",
+	"description": "An MVC web development framework.",
+	"homepage": "https://github.com/csauls/zeal.d",
+	
+	"authors": [
+		"Christopher Nicholson-Sauls"
+	],
+	
+	"version": "0.1.5",
+	
+	"dependencies": [
+	]
+}
