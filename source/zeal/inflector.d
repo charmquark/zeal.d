@@ -70,6 +70,9 @@ unittest {
  */
 string childize ( string src ) {
 	auto offset = src.retro().countUntil( '.' );
+	if ( offset == -1 ) {
+		return src;
+	}
 	return src[ $ - offset .. $ ];
 }
 unittest {
@@ -112,7 +115,9 @@ string decamelize ( string src ) {
 	foreach ( i, char c; src ) {
 		if ( isUpper( c ) && i > 0 ) {
 			app.put( src[ pos .. i ].toLower() );
-			app.put( "_" );
+			if( src[ i - 1 ] != '/' ) {
+				app.put( "_" );
+			}
 			pos = i;
 		}
 	}
@@ -156,6 +161,9 @@ unittest {
  */
 string modulize ( string src ) {
 	auto offset = src.retro().countUntil( '/' );
+	if ( offset == -1 ) {
+		return src;
+	}
 	return src[ $ - offset .. $ ];
 }
 unittest {
@@ -219,7 +227,7 @@ string parentize ( string src ) {
 unittest {
 	assert( "foo".parentize()     == "foo" );
 	assert( "foo.bar".parentize() == "foo" );
-	assert( "foo.a.b".parentize() == "foo" );
+	assert( "foo.a.b".parentize() == "foo.a" );
 }
 
 
@@ -256,7 +264,7 @@ string pluralize ( string src ) {
 	return src ~ "s";
 }
 unittest {
-	assert( "foo".pluralize()   == "foos"    );
+	assert( "thing".pluralize() == "things"  );
 	assert( "glass".pluralize() == "glasses" );
 	assert( "dash".pluralize()  == "dashes"  );
 	assert( "base".pluralize()  == "bases"   );
@@ -302,7 +310,7 @@ string singularize ( string src ) {
 	return src;
 }
 unittest {
-	assert( "foos".singularize()    == "foo"   );
+	assert( "things".singularize()  == "thing" );
 	assert( "glasses".singularize() == "glass" );
 	assert( "dashes".singularize()  == "dash"  );
 	assert( "bases".singularize()   == "base"  );
