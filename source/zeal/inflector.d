@@ -48,7 +48,7 @@ string camelize ( string src, bool upperFirst = true ) {
 		
 		if ( c == '/' ) {
 			app.put( c );
-			beginning = true;
+			beginning = upperFirst;
 		}
 		else {
 			app.put( cast( char ) ( beginning ? toUpper( c ) : toLower( c ) ) );
@@ -57,6 +57,13 @@ string camelize ( string src, bool upperFirst = true ) {
 	}
 	return app.data;
 }
+unittest {
+	assert( "foo".camelize()            == "Foo"     );
+	assert( "foo_bar".camelize()        == "FooBar"  );
+	assert( "foo_bar".camelize( false ) == "fooBar"  );
+	assert( "foo/bar".camelize()        == "Foo/Bar" );
+	assert( "foo/bar".camelize( false ) == "foo/bar" );
+}
 
 /**
  *
@@ -64,6 +71,11 @@ string camelize ( string src, bool upperFirst = true ) {
 string childize ( string src ) {
 	auto offset = src.retro().countUntil( '.' );
 	return src[ $ - offset .. $ ];
+}
+unittest {
+	assert( "foo".childize()     == "foo" );
+	assert( "foo.bar".childize() == "bar" );
+	assert( "a.b.foo".childize() == "foo" );
 }
 
 /**
@@ -86,6 +98,10 @@ string controllerize ( string src ) {
 string dasherize ( string src ) {
 	return src.replace( "_", "-" );
 }
+unittest {
+	assert( "foo".dasherize()     == "foo"     );
+	assert( "foo_bar".dasherize() == "foo-bar" );
+}
 
 /**
  *
@@ -102,6 +118,13 @@ string decamelize ( string src ) {
 	}
 	app.put( src[ pos .. $ ].toLower() );
 	return app.data;
+}
+unittest {
+	assert( "Foo".decamelize()     == "foo"     );
+	assert( "FooBar".decamelize()  == "foo_bar" );
+	assert( "fooBar".decamelize()  == "foo_bar" );
+	assert( "Foo/Bar".decamelize() == "foo/bar" );
+	assert( "foo/bar".decamelize() == "foo/bar" );
 }
 
 /**
@@ -122,6 +145,11 @@ string humanize ( string src ) {
 	atoms[ 0 ] = atoms[ 0 ].capitalize();
 	return atoms.join( " " );
 }
+unittest {
+	assert( "foo".humanize()        == "Foo"     );
+	assert( "foo_bar".humanize()    == "Foo bar" );
+	assert( "foo_bar_id".humanize() == "Foo bar" );
+}
 
 /**
  *
@@ -130,21 +158,43 @@ string modulize ( string src ) {
 	auto offset = src.retro().countUntil( '/' );
 	return src[ $ - offset .. $ ];
 }
+unittest {
+	assert( "foo".modulize()     == "foo" );
+	assert( "foo/bar".modulize() == "bar" );
+}
 
 /**
  *
  */
 string ordinalize ( long n ) {
-	immutable SUFF = [ "th", "st", "nd", "rd" ];
-	auto result = to!string( n );
+	immutable SUFF = [ "th", "st", "nd", "rd", "th", "th", "th", "th", "th", "th" ];
 	
-	if ( n < 4 || n > 20 ) {
-		result ~= SUFF[ ( n < 0 ? -n : n ) % 4 ];
-	}
-	else {
-		result ~= SUFF[ 0 ];
-	}
+	auto result = to!string( n );
+	result ~= SUFF[ result[ $ - 1 ] - '0' ];
 	return result;
+}
+unittest {
+	assert( 0.ordinalize()   == "0th"   );
+	assert( 1.ordinalize()   == "1st"   );
+	assert( 2.ordinalize()   == "2nd"   );
+	assert( 3.ordinalize()   == "3rd"   );
+	assert( 4.ordinalize()   == "4th"   );
+	assert( 5.ordinalize()   == "5th"   );
+	assert( 10.ordinalize()  == "10th"  );
+	assert( 21.ordinalize()  == "21st"  );
+	assert( 22.ordinalize()  == "22nd"  );
+	assert( 23.ordinalize()  == "23rd"  );
+	assert( 25.ordinalize()  == "25th"  );
+	assert( 30.ordinalize()  == "30th"  );
+	assert( 31.ordinalize()  == "31st"  );
+	assert( 32.ordinalize()  == "32nd"  );
+	assert( 33.ordinalize()  == "33rd"  );
+	assert( 66.ordinalize()  == "66th"  );
+	assert( 100.ordinalize() == "100th" );
+	assert( 101.ordinalize() == "101st" );
+	assert( 102.ordinalize() == "102nd" );
+	assert( 103.ordinalize() == "103rd" );
+	assert( 104.ordinalize() == "104th" );
 }
 
 /**
@@ -154,6 +204,10 @@ string packagize ( string src ) {
 	auto offset = 1 + src.retro().countUntil( '/' );
 	return src[ 0 .. $ - offset ];
 }
+unittest {
+	assert( "foo".packagize()     == "foo" );
+	assert( "foo/bar".packagize() == "foo" );
+}
 
 /**
  *
@@ -162,6 +216,12 @@ string parentize ( string src ) {
 	auto offset = 1 + src.retro().countUntil( '.' );
 	return src[ 0 .. $ - offset ];
 }
+unittest {
+	assert( "foo".parentize()     == "foo" );
+	assert( "foo.bar".parentize() == "foo" );
+	assert( "foo.a.b".parentize() == "foo" );
+}
+
 
 /**
  *
@@ -194,6 +254,16 @@ string pluralize ( string src ) {
 	
 	// if all else fails, just apply "s"
 	return src ~ "s";
+}
+unittest {
+	assert( "foo".pluralize()   == "foos"    );
+	assert( "glass".pluralize() == "glasses" );
+	assert( "dash".pluralize()  == "dashes"  );
+	assert( "base".pluralize()  == "bases"   );
+	assert( "box".pluralize()   == "boxes"   );
+	assert( "zero".pluralize()  == "zeroes"  );
+	assert( "woman".pluralize() == "women"   );
+	assert( "image".pluralize() == "images"  );
 }
 
 /**
@@ -230,6 +300,16 @@ string singularize ( string src ) {
 		return src[ 0 .. $ - 1 ];
 	}
 	return src;
+}
+unittest {
+	assert( "foos".singularize()    == "foo"   );
+	assert( "glasses".singularize() == "glass" );
+	assert( "dashes".singularize()  == "dash"  );
+	assert( "bases".singularize()   == "base"  );
+	assert( "boxes".singularize()   == "box"   );
+	assert( "zeroes".singularize()  == "zero"  );
+	assert( "women".singularize()   == "woman" );
+	assert( "images".singularize()  == "image" );
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
