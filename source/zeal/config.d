@@ -20,53 +20,51 @@
     //  OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                         //
     ////////////////////////////////////////////////////////////////////////////////////////////
 
-module zeal.application;
+module zeal.config;
 
-import vibe.d;
+import std.metastrings;
+import std.string;
 
-import zeal.http.router;
+import Custom = config;
 
-final class ZealApplication {
+struct Defaults { static:
+	enum string[] inflections = [];
+	enum ushort   port        = 8080;
+	enum string[] resources   = [];
+}
 
-	enum ushort DEFAULT_PORT = 8080;
+template ZealConfig ( string _ID ) {
+	mixin(Format!(
+		q{
+			static if ( is( typeof( Custom.%s ) ) ) {
+				alias Custom.%s ZealConfig;
+			}
+			else static if ( is( typeof( .default_%s ) ) ) {
+				alias Defaults.%s ZealConfig;
+			}
+			else {
+				static assert( false, "ZealConfig found no value for id '%s'." );
+			}
+		},
+		_ID,
+		_ID,
+		_ID,
+		_ID,
+		_ID
+	));
+}
 
-	this () {
-	}
-	
-	this ( string addr, ushort prt = DEFAULT_PORT ) {
-		addresses ~= addr;
-		port = prt;
-	}
-	
-	this ( string[] addrs, ushort prt = DEFAULT_PORT ) {
-		addresses = addrs.dup;
-		port = prt;
-	}
-	
-	string[] addresses;
-	ushort   port      = DEFAULT_PORT;
-	
-	@property ZealRouter router () {
-		if ( m_router is null ) {
-			m_router = ZealRouter();
-		}
-		return m_router;
-	}
-	
-	void start () {
-		if ( !m_started ) {
-			m_serverSettings = new HttpServerSettings;
-			m_serverSettings.bindAddresses ~= addresses;
-			m_serverSettings.port = port;
-			listenHttp( m_serverSettings, m_router );
-			m_started = true;
-		}
-	}
-	
-private:
-	
-	ZealRouter			m_router;
-	HttpServerSettings	m_serverSettings;
-	bool 				m_started;
-
+template ZealConfig ( string _ID, alias _Default ) {
+	mixin(Format!(
+		q{
+			static if ( is( typeof( Custom.%s ) ) ) {
+				alias Custom.%s ZealConfig;
+			}
+			else {
+				alias _Default ZealConfig;
+			}
+		},
+		_ID,
+		_ID
+	));
 }

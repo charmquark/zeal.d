@@ -1,21 +1,25 @@
-/+
-Copyright (c) 2012 Christopher Nicholson-Sauls
 
-Permission is hereby granted, free of charge, to any person obtaining a copy of this software and 
-associated documentation files (the "Software"), to deal in the Software without restriction, 
-including without limitation the rights to use, copy, modify, merge, publish, distribute, 
-sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is 
-furnished to do so, subject to the following conditions:
+    ////////////////////////////////////////////////////////////////////////////////////////////
+    //  Copyright (c) 2012 Christopher Nicholson-Sauls                                        //
+    //                                                                                        //
+    //  Permission is hereby granted, free of charge, to any person obtaining a copy of this  //
+    //  software and associated documentation files (the "Software"), to deal in the          //
+    //  Software without restriction, including without limitation the rights to use, copy,   //
+    //  modify, merge, publish, distribute, sublicense, and/or sell copies of the Software,   //
+    //  and to permit persons to whom the Software is furnished to do so, subject to the      //
+    //  following conditions:                                                                 //
+    //                                                                                        //
+    //  The above copyright notice and this permission notice shall be included in all        //
+    //  copies or substantial portions of the Software.                                       //
+    //                                                                                        //
+    //  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,   //
+    //  INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A         //
+    //  PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT    //
+    //  HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF  //
+    //  CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE  //
+    //  OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                         //
+    ////////////////////////////////////////////////////////////////////////////////////////////
 
-The above copyright notice and this permission notice shall be included in all copies or substantial
-portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT 
-NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND 
-NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES
-OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
-CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-+/
 /**
  *
  */
@@ -27,6 +31,8 @@ import std.ascii;
 import std.conv;
 import std.range;
 import std.string;
+
+import zeal.config;
 
 /**
  *
@@ -161,14 +167,83 @@ string parentize ( string src ) {
  *
  */
 string pluralize ( string src ) {
-	//TODO
-	return src;
+	// first check custom inflections
+	alias ZealConfig!"inflections" custom;
+	for (
+		size_t s = 0, p = 1;
+		p < custom.length;
+		s += 2, p += 2
+	) {
+		if ( src == custom[ s ] ) {
+			return custom[ p ];
+		}
+	}
+	
+	// second check basic inflections
+	for (
+		size_t s = 0, p = 1;
+		p < BASIC_INFLECTIONS.length;
+		s += 2, p += 2
+	) {
+		if ( src.endsWith( BASIC_INFLECTIONS[ s ] ) ) {
+			string result = src[ 0 .. $ - BASIC_INFLECTIONS[ s ].length ];
+			result ~= BASIC_INFLECTIONS[ p ];
+			return result;
+		}
+	}
+	
+	// if all else fails, just apply "s"
+	return src ~ "s";
 }
 
 /**
  *
  */
 string singularize ( string src ) {
-	//TODO
+	// first check custom inflections
+	alias ZealConfig!"inflections" custom;
+	for (
+		size_t s = 0, p = 1;
+		p < custom.length;
+		s += 2, p += 2
+	) {
+		if ( src == custom[ p ] ) {
+			return custom[ s ];
+		}
+	}
+	
+	// second check basic inflections
+	for (
+		size_t s = 0, p = 1;
+		p < BASIC_INFLECTIONS.length;
+		s += 2, p += 2
+	) {
+		if ( src.endsWith( BASIC_INFLECTIONS[ p ] ) ) {
+			string result = src[ 0 .. $ - BASIC_INFLECTIONS[ p ].length ];
+			result ~= BASIC_INFLECTIONS[ s ];
+			return result;
+		}
+	}
+	
+	// if all else fails, just remove "s" if present
+	if ( src[ $ - 1 ] == 's' ) {
+		return src[ 0 .. $ - 1 ];
+	}
 	return src;
 }
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+private:
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
+/**
+ *
+ */
+enum BASIC_INFLECTIONS = [
+	"ss",  "sses",
+	"sh",  "shes",
+	"se",  "ses",
+	"ox",  "oxes",
+	"o",   "oes",
+	"man", "men"
+];
