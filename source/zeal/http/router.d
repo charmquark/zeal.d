@@ -28,6 +28,8 @@ module zeal.http.router;
 import std.metastrings;
 import std.string;
 
+import vibe.core.log;
+
 import vibe.http.router;
 import vibe.http.server;
 
@@ -38,6 +40,9 @@ import zeal.base.controller;
 
 import zeal.utils.singleton;
 
+mixin ConfigImports!( ZealConfig!`resources` );
+
+
 /**
  *
  */
@@ -45,7 +50,7 @@ class ZealRouter : UrlRouter {
 	mixin Singleton;
 	
 	private this () {
-		mixin ConfigRoutes!( ZealConfig!`resources` );
+		mixin( ConfigRoutes!( ZealConfig!`resources` ) );
 	}
 
 	alias void delegate ( HttpServerRequest, HttpServerResponse ) action;
@@ -97,21 +102,23 @@ class ZealRouter : UrlRouter {
 		static if ( is( typeof( c.route( this ) ) ) ) {
 			c.route( this );
 		}
+		
+		logInfo( "ZealRouter added resource: %s.", _Base[ 1 .. $ ] );
 		return this;
 	}
 
 	///ditto
 	final @property typeof( this ) resource ( string _R ) () {
-		enum _Module		= _R;
-		enum _Controller	= _Module.capitalize();
+		enum _Module		= "controllers." ~ _R;
+		enum _Controller	= _R.controllerize();
 		
 		mixin(Format!(
 			q{
-				import controllers.%s;
-				resource = %sController();
+				import %s;
+				resource!%s = %s();
 			},
 			_Module,
-			_Controller
+			_Controller, _Controller
 		));
 		return this;
 	}
@@ -141,14 +148,31 @@ class ZealRouter : UrlRouter {
 /**
  *
  */
-mixin template ConfigRoutes ( alias _List ) {
+private template ConfigRoutes ( alias _List ) {
 	static if ( _List.length > 0 ) {
-		mixin(Format!(
-			q{
-				resource!"%s";
-			},
-			_List[ 0 ]
-		));
-		mixin ConfigRoutes!( _List[ 1 .. $ ] );
+		pragma( msg, " ** ConfigRoutes( List ) -- routing '" ~ _List[ 0 ] ~ "'" );
+		enum ConfigRoutes = 
+			Format!( `resource!"%s";`, _List[ 0 ] )
+			~ ConfigRoutes!( _List[ 1 .. $ ] )
+		;
+	}
+	else {
+		enum ConfigRoutes = "";
 	}
 }
+
+
+/**
+ *
+ */
+private mixin template ConfigImports ( alias _List ) {
+	static if ( _List.length > 0 ) {
+		pragma( msg, " ** ConfigImports( List ) -- importing '" ~ _List[ 0 ] ~ "'" );
+		mixin(Format!(
+			`import controllers.%s;`,
+			_List[ 0 ]
+		));
+		mixin ConfigImports!( _List[ 1 .. $ ] );
+	}
+}
+

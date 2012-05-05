@@ -89,7 +89,7 @@ string classify ( string src ) {
  *
  */
 string controllerize ( string src ) {
-	return src.camelize().pluralize() ~ "Controller";
+	return src.camelize() ~ "Controller";
 }
 
 /**
