@@ -150,7 +150,6 @@ class ZealRouter : UrlRouter {
  */
 private template ConfigRoutes ( alias _List ) {
 	static if ( _List.length > 0 ) {
-		pragma( msg, " ** ConfigRoutes( List ) -- routing '" ~ _List[ 0 ] ~ "'" );
 		enum ConfigRoutes = 
 			Format!( `resource!"%s";`, _List[ 0 ] )
 			~ ConfigRoutes!( _List[ 1 .. $ ] )
@@ -167,7 +166,6 @@ private template ConfigRoutes ( alias _List ) {
  */
 private mixin template ConfigImports ( alias _List ) {
 	static if ( _List.length > 0 ) {
-		pragma( msg, " ** ConfigImports( List ) -- importing '" ~ _List[ 0 ] ~ "'" );
 		mixin(Format!(
 			`import controllers.%s;`,
 			_List[ 0 ]
