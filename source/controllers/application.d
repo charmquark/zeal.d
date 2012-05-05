@@ -25,7 +25,7 @@ module controllers.application;
 import std.string;
 import std.traits;
 
-import zeal.d;
+import zeal.zeal;
 
 import zeal.utils.singleton;
 

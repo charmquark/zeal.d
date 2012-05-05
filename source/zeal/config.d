@@ -28,6 +28,7 @@ import std.string;
 import Custom = config;
 
 struct Defaults { static:
+	enum string   address     = "127.0.0.1";
 	enum string[] inflections = [];
 	enum ushort   port        = 8080;
 	enum string[] resources   = [];
@@ -39,7 +40,7 @@ template ZealConfig ( string _ID ) {
 			static if ( is( typeof( Custom.%s ) ) ) {
 				alias Custom.%s ZealConfig;
 			}
-			else static if ( is( typeof( .default_%s ) ) ) {
+			else static if ( is( typeof( Defaults.%s ) ) ) {
 				alias Defaults.%s ZealConfig;
 			}
 			else {

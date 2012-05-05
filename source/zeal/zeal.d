@@ -23,40 +23,15 @@
 /**
  *
  */
-module config;
+module zeal.zeal;
+ 
+public import vibe.vibe;
 
-/**
- * Primary binding address.
- * Default is "127.0.0.1".
- */
-// enum address = ;
+public import zeal.application;
+public import zeal.inflector;
 
-/**
- * Custom inflections.
- * Each entry should be a pair of elements in the order "singular","plural".  For example:
- * ---
- * enum inflections = [
- *   "cactus", "cacti",
- *   "child", "children",
- *   "formula", "formulae"
- * ]
- * ---
- */
-enum inflections = [
-	"child", "children"
-];
+public import zeal.base.controller;
 
-/**
- * HTTP listener port.
- * The default is 8080.
- */
-//enum port = ;
+public import zeal.http.router;
 
-/**
- * Automatically routed resources.
- * Each element should be the canonical (lowercase and plural) resource name.  For example:
- * ---
- * enum resources = [ "users", "posts" ];
- * ---
- */
-//enum resources = [  ];
+public import controllers.application;

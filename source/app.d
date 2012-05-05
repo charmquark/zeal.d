@@ -25,14 +25,12 @@ module app;
 import zeal.d;
 
 static this () {
-	auto app = new ZealApplication( "127.0.0.1" );
+	auto app = ZealApplication();
 	
 	with ( app.router ) {
 		match!( `/home`, `pages.home` );
 		
 		root!`pages.home`;
 	}
-	
-	app.start();
 }
 

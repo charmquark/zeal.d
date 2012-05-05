@@ -20,53 +20,79 @@
     //  OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                         //
     ////////////////////////////////////////////////////////////////////////////////////////////
 
+/**
+ *
+ */
 module zeal.application;
 
-import vibe.d;
+import vibe.vibe;
+
+import zeal.config;
 
 import zeal.http.router;
 
+import zeal.utils.singleton;
+
+
+/**
+ *
+ */
 final class ZealApplication {
+	mixin Singleton;
 
-	enum ushort DEFAULT_PORT = 8080;
-
-	this () {
-	}
 	
-	this ( string addr, ushort prt = DEFAULT_PORT ) {
-		addresses ~= addr;
-		port = prt;
-	}
+	/**
+	 *
+	 */
+	string[] addresses = [ ZealConfig!`address` ];
+	ushort   port      = ZealConfig!`port`;
 	
-	this ( string[] addrs, ushort prt = DEFAULT_PORT ) {
-		addresses = addrs.dup;
-		port = prt;
-	}
 	
-	string[] addresses;
-	ushort   port      = DEFAULT_PORT;
-	
-	@property ZealRouter router () {
+	/**
+	 *
+	 */
+	final @property ZealRouter router () {
 		if ( m_router is null ) {
 			m_router = ZealRouter();
 		}
 		return m_router;
 	}
 	
-	void start () {
-		if ( !m_started ) {
+	
+	/**
+	 *
+	 */
+	final @property HttpServerSettings serverSettings () {
+		if ( m_serverSettings is null ) {
 			m_serverSettings = new HttpServerSettings;
-			m_serverSettings.bindAddresses ~= addresses;
-			m_serverSettings.port = port;
-			listenHttp( m_serverSettings, m_router );
+		}
+		return m_serverSettings;
+	}
+	
+	
+	/**
+	 *
+	 */
+	final void start () {
+		if ( !m_started ) {
+			auto ss = serverSettings;
+			ss.bindAddresses ~= addresses;
+			ss.port = port;
+			
+			listenHttp( ss, router );
+			
 			m_started = true;
+			.start();
 		}
 	}
 	
 private:
-	
+
+	/**
+	 *
+	 */
 	ZealRouter			m_router;
 	HttpServerSettings	m_serverSettings;
 	bool 				m_started;
 
-}
+} // end class ZealApplication

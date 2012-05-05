@@ -23,40 +23,27 @@
 /**
  *
  */
-module config;
+module zeal.appmain;
+
+import vibe.core.args;
+import vibe.core.log;
+
+import zeal.application;
+
 
 /**
- * Primary binding address.
- * Default is "127.0.0.1".
+ *
  */
-// enum address = ;
-
-/**
- * Custom inflections.
- * Each entry should be a pair of elements in the order "singular","plural".  For example:
- * ---
- * enum inflections = [
- *   "cactus", "cacti",
- *   "child", "children",
- *   "formula", "formulae"
- * ]
- * ---
- */
-enum inflections = [
-	"child", "children"
-];
-
-/**
- * HTTP listener port.
- * The default is 8080.
- */
-//enum port = ;
-
-/**
- * Automatically routed resources.
- * Each element should be the canonical (lowercase and plural) resource name.  For example:
- * ---
- * enum resources = [ "users", "posts" ];
- * ---
- */
-//enum resources = [  ];
+int main ( string[] args ) {
+	processCommandLineArgs( args );
+	
+	logInfo( "Running event loop..." );
+	try {
+		ZealApplication().start();
+	}
+	catch ( Throwable x ) {
+		logError( "Unhandled exception in event loop: %s", x.toString() );
+		return 1;
+	}
+	return 0;
+}

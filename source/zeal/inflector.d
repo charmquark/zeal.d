@@ -174,27 +174,27 @@ string ordinalize ( long n ) {
 	return result;
 }
 unittest {
-	assert( 0.ordinalize()   == "0th"   );
-	assert( 1.ordinalize()   == "1st"   );
-	assert( 2.ordinalize()   == "2nd"   );
-	assert( 3.ordinalize()   == "3rd"   );
-	assert( 4.ordinalize()   == "4th"   );
-	assert( 5.ordinalize()   == "5th"   );
-	assert( 10.ordinalize()  == "10th"  );
-	assert( 21.ordinalize()  == "21st"  );
-	assert( 22.ordinalize()  == "22nd"  );
-	assert( 23.ordinalize()  == "23rd"  );
-	assert( 25.ordinalize()  == "25th"  );
-	assert( 30.ordinalize()  == "30th"  );
-	assert( 31.ordinalize()  == "31st"  );
-	assert( 32.ordinalize()  == "32nd"  );
-	assert( 33.ordinalize()  == "33rd"  );
-	assert( 66.ordinalize()  == "66th"  );
-	assert( 100.ordinalize() == "100th" );
-	assert( 101.ordinalize() == "101st" );
-	assert( 102.ordinalize() == "102nd" );
-	assert( 103.ordinalize() == "103rd" );
-	assert( 104.ordinalize() == "104th" );
+	assert( ordinalize( 0 )   == "0th"   );
+	assert( ordinalize( 1 )   == "1st"   );
+	assert( ordinalize( 2 )   == "2nd"   );
+	assert( ordinalize( 3 )   == "3rd"   );
+	assert( ordinalize( 4 )   == "4th"   );
+	assert( ordinalize( 5 )   == "5th"   );
+	assert( ordinalize( 10 )  == "10th"  );
+	assert( ordinalize( 21 )  == "21st"  );
+	assert( ordinalize( 22 )  == "22nd"  );
+	assert( ordinalize( 23 )  == "23rd"  );
+	assert( ordinalize( 25 )  == "25th"  );
+	assert( ordinalize( 30 )  == "30th"  );
+	assert( ordinalize( 31 )  == "31st"  );
+	assert( ordinalize( 32 )  == "32nd"  );
+	assert( ordinalize( 33 )  == "33rd"  );
+	assert( ordinalize( 66 )  == "66th"  );
+	assert( ordinalize( 100 ) == "100th" );
+	assert( ordinalize( 101 ) == "101st" );
+	assert( ordinalize( 102 ) == "102nd" );
+	assert( ordinalize( 103 ) == "103rd" );
+	assert( ordinalize( 104 ) == "104th" );
 }
 
 /**

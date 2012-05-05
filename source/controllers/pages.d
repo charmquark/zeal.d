@@ -22,7 +22,7 @@
 
 module controllers.pages;
 
-import zeal.d;
+import zeal.zeal;
 
 final class PagesController : ApplicationController {
 	mixin Standard!( false );

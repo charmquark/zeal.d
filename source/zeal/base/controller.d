@@ -22,7 +22,7 @@
 
 module zeal.base.controller;
 
-import vibe.d;
+import vibe.vibe;
 
 abstract class Controller {
 	

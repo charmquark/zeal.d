@@ -20,15 +20,11 @@
     //  OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                         //
     ////////////////////////////////////////////////////////////////////////////////////////////
 
+/**
+ *
+ */
 module zeal.d;
 
-public import vibe.d;
+public import zeal.zeal;
 
-public import zeal.application;
-public import zeal.inflector;
-
-public import zeal.base.controller;
-
-public import zeal.http.router;
-
-public import controllers.application;
+import zeal.appmain;
