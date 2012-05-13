@@ -7,7 +7,7 @@
 		"Christopher Nicholson-Sauls"
 	],
 	
-	"version": "0.1.8",
+	"version": "0.1.9",
 	
 	"dependencies": {
 		"sass-vibe": ">=0.2.0"
