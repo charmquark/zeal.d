@@ -29,9 +29,11 @@ import Custom = config;
 
 struct Defaults { static:
 	enum string   address     = "127.0.0.1";
+	enum string   assets      = "./assets/";
 	enum string[] inflections = [];
 	enum ushort   port        = 8080;
 	enum string[] resources   = [];
+	enum string[] styles      = [ "application" ];
 }
 
 template ZealConfig ( string _ID ) {

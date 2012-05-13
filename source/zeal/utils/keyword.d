@@ -20,53 +20,115 @@
     //  OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                         //
     ////////////////////////////////////////////////////////////////////////////////////////////
 
-/**
- *
- */
-module config;
+module zeal.utils.keyword;
 
-/**
- * Assets directory.
- * Default is "./assets/".
- */
-// enum assets = ;
-
-/**
- * Primary binding address.
- * Default is "127.0.0.1".
- */
-// enum address = ;
-
-/**
- * Custom inflections.
- * Each entry should be a pair of elements in the order "singular","plural".  For example:
- * ---
- * enum inflections = [
- *   "cactus", "cacti",
- *   "child", "children",
- *   "formula", "formulae"
- * ]
- * ---
- */
-// enum inflections = [  ];
-
-/**
- * HTTP listener port.
- * Default is 8080.
- */
-// enum port = ;
-
-/**
- * Automatically routed resources.
- * Each element should be the canonical (lowercase and plural) resource name.  For example:
- * ---
- * enum resources = [ "users", "posts" ];
- * ---
- */
-//enum resources = [  ];
-
-/**
- * Stylesheets to be compiled by Sass.  These should be located at "ASSETS/styles/NAME.scss".
- * Default is [ "application" ].
- */
-// enum styles = [  ];
+bool isKeyword ( string s ) {
+	switch ( s ) {
+		case `abstract`:
+		case `alias`:
+		case `align`:
+		case `asm`:
+		case `assert`:
+		case `auto`:
+		case `body`:
+		case `bool`:
+		case `break`:
+		case `byte`:
+		case `case`:
+		case `cast`:
+		case `catch`:
+		case `cdouble`:
+		case `cent`:
+		case `cfloat`:
+		case `char`:
+		case `class`:
+		case `const`:
+		case `continue`:
+		case `creal`:
+		case `dchar`:
+		case `debug`:
+		case `default`:
+		case `delegate`:
+		case `delete`:
+		case `deprecated`:
+		case `do`:
+		case `double`:
+		case `else`:
+		case `enum`:
+		case `export`:
+		case `extern`:
+		case `false`:
+		case `final`:
+		case `finally`:
+		case `float`:
+		case `for`:
+		case `foreach`:
+		case `foreach_reverse`:
+		case `function`:
+		case `goto`:
+		case `idouble`:
+		case `if`:
+		case `ifloat`:
+		case `immutable`:
+		case `import`:
+		case `in`:
+		case `inout`:
+		case `int`:
+		case `interface`:
+		case `invariant`:
+		case `ireal`:
+		case `is`:
+		case `lazy`:
+		case `long`:
+		case `macro`:
+		case `mixin`:
+		case `module`:
+		case `new`:
+		case `nothrow`:
+		case `null`:
+		case `out`:
+		case `override`:
+		case `package`:
+		case `pragma`:
+		case `private`:
+		case `protected`:
+		case `public`:
+		case `pure`:
+		case `real`:
+		case `ref`:
+		case `return`:
+		case `scope`:
+		case `shared`:
+		case `short`:
+		case `static`:
+		case `struct`:
+		case `super`:
+		case `switch`:
+		case `synchronized`:
+		case `template`:
+		case `this`:
+		case `throw`:
+		case `true`:
+		case `try`:
+		case `typedef`:
+		case `typeid`:
+		case `typeof`:
+		case `ubyte`:
+		case `ucent`:
+		case `uint`:
+		case `ulong`:
+		case `union`:
+		case `unittest`:
+		case `ushort`:
+		case `version`:
+		case `void`:
+		case `volatile`:
+		case `wchar`:
+		case `while`:
+		case `with`:
+			return true;
+	
+		default:
+			return false;
+	}
+}

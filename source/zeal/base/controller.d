@@ -22,14 +22,18 @@
 
 module zeal.base.controller;
 
-import vibe.vibe;
+import vibe.http.server;
+
+import zeal.inflector;
+
+import zeal.utils.keyword;
 
 abstract class Controller {
 	
 	protected mixin template Standard ( bool _REST = true ) {
 		mixin zeal.utils.singleton.Singleton;
 		
-		@property void delegate( Request, Response ) opDispatch ( string _SuffixedName ) () 
+/*		@property void delegate( Request, Response ) opDispatch ( string _SuffixedName ) () 
 		if ( _SuffixedName[ $ - 6 .. $ ] == `Action` ) {
 			enum _A = _SuffixedName[ 0 .. $ - 6 ].capitalize();
 			
@@ -41,10 +45,26 @@ abstract class Controller {
 				return null;
 			}
 		}
+*/		
+		@property Action action ( string _Name ) () {
+			enum _Suffix = zeal.utils.keyword.isKeyword( _Name ) ? "_" : "";
+			enum _Method = _Name.camelize( false ) ~ _Suffix;
+			enum _Dlg    = `&this.` ~ _Method;
+			
+			static if ( is( typeof( mixin( _Dlg ) ) == Action ) ) {
+				mixin( `return ` ~ _Dlg ~ `;` );
+			}
+			else {
+				return null;
+			}
+		}
 	}
 
 	protected alias HttpServerRequest Request;
 	protected alias HttpServerResponse Response;
+	
+	alias void delegate( Request, Response ) Action;
+		
 	
 }
 

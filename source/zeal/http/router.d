@@ -30,6 +30,7 @@ import std.string;
 
 import vibe.core.log;
 
+import vibe.http.fileserver;
 import vibe.http.router;
 import vibe.http.server;
 
@@ -39,6 +40,8 @@ import zeal.inflector;
 import zeal.base.controller;
 
 import zeal.utils.singleton;
+
+import sass;
 
 mixin ConfigImports!( ZealConfig!`resources` );
 
@@ -61,14 +64,14 @@ class ZealRouter : UrlRouter {
 	final @property typeof( this ) match ( string _Path, string _C_A, string _Via_ = "any" ) () 
 	if ( _Via_ == "delete" || _Via_ == "delete_" || _Via_ == "get" || _Via_ == "post" || _Via_ == "put" || _Via_ == "any" ) {
 		enum _Module		= _C_A.parentize();
-		enum _Controller	= _Module.camelize();
+		enum _Controller	= _Module.controllerize();
 		enum _Action		= _C_A.childize();
 		enum _Via			= _Via_ ~ ( _Via_ == "delete" ? "_" : "" );
 		
 		mixin(Format!(
 			q{
 				import controllers.%s;
-				auto cb = %sController().%sAction;
+				auto cb = %s().action!`%s`;
 				if ( cb == null ) {
 					throw new Exception( "Attempted to add route to nonexistant action: %s -> %s" );
 				}
@@ -91,19 +94,19 @@ class ZealRouter : UrlRouter {
 		enum _ID 	= _Base ~ "/:id";
 		enum _Edit	= _ID ~ "/edit";
 		
-		if ( auto a = c.newAction     ) get( _New, a );
-		if ( auto a = c.createAction  ) post( _Base, a );
-		if ( auto a = c.indexAction   ) get( _Base, a );
-		if ( auto a = c.showAction    ) get( _ID, a );
-		if ( auto a = c.editAction    ) get( _Edit, a );
-		if ( auto a = c.updateAction  ) put( _ID, a );
-		if ( auto a = c.destroyAction ) delete_( _ID, a );
+		if ( auto a = c.action!`new`     ) get    ( _New , a );
+		if ( auto a = c.action!`create`  ) post   ( _Base, a );
+		if ( auto a = c.action!`index`   ) get    ( _Base, a );
+		if ( auto a = c.action!`show`    ) get    ( _ID  , a );
+		if ( auto a = c.action!`edit`    ) get    ( _Edit, a );
+		if ( auto a = c.action!`update`  ) put    ( _ID  , a );
+		if ( auto a = c.action!`destroy` ) delete_( _ID  , a );
 		
 		static if ( is( typeof( c.route( this ) ) ) ) {
 			c.route( this );
 		}
 		
-		logInfo( "ZealRouter added resource: %s.", _Base[ 1 .. $ ] );
+		logInfo( "ZealRouter: added resource: %s.", _Base[ 1 .. $ ] );
 		return this;
 	}
 
@@ -139,6 +142,21 @@ class ZealRouter : UrlRouter {
 	///ditto
 	final @property typeof( this ) root ( string _C_A, string _Via = "any" ) () {
 		match!( "/", _C_A, _Via );
+		return this;
+	}
+	
+	/**
+	 *
+	 */
+	final typeof( this ) routeAssets () {
+		auto assets = ZealConfig!`assets`;
+		
+		auto dir = assets ~ `styles/`;
+		foreach ( style; ZealConfig!`styles` ) {
+			compileSass( dir, style );
+		}
+		
+		get( `*`, serveStaticFiles( ZealConfig!`assets` ) );
 		return this;
 	}
 	

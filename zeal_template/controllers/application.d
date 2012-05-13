@@ -42,33 +42,31 @@ abstract class ApplicationController : Controller {
 		final class ThingsController : ApplicationController {
 			mixin Standard;
 			
-		private:
-		
-			final void doNew ( Request req, Resposne res ) {
+			final void new_ ( Request req, Resposne res ) {
 				//...
 			}
 		
-			final void doCreate ( Request req, Resposne res ) {
+			final void create ( Request req, Resposne res ) {
 				//...
 			}
 		
-			final void doIndex ( Request req, Resposne res ) {
+			final void index ( Request req, Resposne res ) {
 				//...
 			}
 		
-			final void doShow ( Request req, Resposne res ) {
+			final void show ( Request req, Resposne res ) {
 				//...
 			}
 		
-			final void doEdit ( Request req, Resposne res ) {
+			final void edit ( Request req, Resposne res ) {
 				//...
 			}
 		
-			final void doUpdate ( Request req, Resposne res ) {
+			final void update ( Request req, Resposne res ) {
 				//...
 			}
 		
-			final void doDestroy ( Request req, Resposne res ) {
+			final void destroy ( Request req, Resposne res ) {
 				//...
 			}
 		

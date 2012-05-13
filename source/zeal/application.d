@@ -25,7 +25,10 @@
  */
 module zeal.application;
 
-import vibe.vibe;
+import vibe.core.core;
+
+import vibe.http.router;
+import vibe.http.server;
 
 import zeal.config;
 
@@ -75,6 +78,8 @@ final class ZealApplication {
 	 */
 	final void start () {
 		if ( !m_started ) {
+			router.routeAssets();
+			
 			auto ss = serverSettings;
 			ss.bindAddresses ~= addresses;
 			ss.port = port;
