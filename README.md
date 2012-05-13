@@ -72,6 +72,10 @@ Then to route this resource, you would edit your _app.d_ module:
 		}
 	}
 
+Or you could instead specify it in the _config_ module (provided by the Zeal template):
+
+	enum resources = [ "things" ];
+
 And that's it!  Your _ThingsController_ will be automatically instantiated and the actions it
 defines are routed in the appropriate RESTful manner.  For example, a request like _GET /things_
 would be routed to _ThingsController().index()_.
