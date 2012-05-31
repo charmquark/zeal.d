@@ -40,7 +40,6 @@ abstract class ApplicationController : Controller {
 		import models.thing; // this implementation is not yet part of Zeal
 		
 		final class ThingsController : ApplicationController {
-			mixin Standard;
 			
 			final void new_ ( Request req, Resposne res ) {
 				//...

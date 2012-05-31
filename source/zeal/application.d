@@ -78,8 +78,6 @@ final class ZealApplication {
 	 */
 	final void start () {
 		if ( !m_started ) {
-			router.routeAssets();
-			
 			auto ss = serverSettings;
 			ss.bindAddresses ~= addresses;
 			ss.port = port;

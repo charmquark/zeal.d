@@ -8,10 +8,12 @@ Cake.
 Installation
 ------------
 
+ - Install Ruby and RubyGems if you don't already have them.  Sorry to say that, at least for now, 
+   this is a strict requirement.
  - Install the Sass Ruby gem, required for _sass-vibe_ on which Zeal depends:
    - `gem install sass`
  - Add to your _package.json_ file under "dependencies":
-   - "zeal": ">=0.1.9"
+   - "zeal": ">=0.1.10"
  - Run _vibe_ once to install Zeal and its dependencies.
  - Copy the files from _modules/zeal/template_ to your application. Examine them and modify as 
    desired.
@@ -41,8 +43,7 @@ _source/controllers/things.d_ and edit it similar to the following (each action 
 	import controllers.application;
 	
 	final class ThingsController : ApplicationController {
-		mixin Standard;
-		
+	
 		void new_ ( Request req, Response res ) { /*...*/ }
 		
 		void create ( Request req, Response res ) { /*...*/ }
@@ -56,6 +57,7 @@ _source/controllers/things.d_ and edit it similar to the following (each action 
 		void update ( Request req, Response res ) { /*...*/ }
 		
 		void destroy ( Request req, Response res ) { /*...*/ }
+	
 	}
 
 Then to route this resource, you would edit your _app.d_ module:
@@ -77,15 +79,15 @@ Or you could instead specify it in the _config_ module (provided by the Zeal tem
 	enum resources = [ "things" ];
 
 And that's it!  Your _ThingsController_ will be automatically instantiated and the actions it
-defines are routed in the appropriate RESTful manner.  For example, a request like _GET /things_
-would be routed to _ThingsController().index()_.
+defines are routed in the appropriate RESTful manner due to mysterious elven magic.  For example, a
+request like _GET /things_ would be routed to _ThingsController.index_.
 
 Stylesheets
 -----------
 
 Zeal pulls in the _sass-vibe_ module, and as such lets you define stylesheets as
-[Sass](http://sass-lang.com/) scripts. The template includes the file
-_assets/styles/application.scss_.
+[SCSS](http://sass-lang.com/) scripts. The template includes the file
+_assets/styles/application.scss_ to get you started.
 
 Future Directions
 -----------------
@@ -104,4 +106,3 @@ The following are just possibilities for now.
    implemented).
  - Extending controllers and views to semi-automate the passing of variables from the controller
    into the view template.
- - A "Diet" like DSL for writing controllers.

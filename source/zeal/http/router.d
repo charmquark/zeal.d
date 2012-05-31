@@ -40,10 +40,11 @@ import zeal.inflector;
 import zeal.base.controller;
 
 import zeal.utils.singleton;
+import zeal.utils.tuple;
 
 import sass;
 
-mixin ConfigImports!( ZealConfig!`resources` );
+mixin ConfigImports;
 
 
 /**
@@ -52,12 +53,13 @@ mixin ConfigImports!( ZealConfig!`resources` );
 class ZealRouter : UrlRouter {
 	mixin Singleton;
 	
-	private this () {
-		mixin( ConfigRoutes!( ZealConfig!`resources` ) );
+	protected this () {
+		foreach ( _R; ArrayTuple!( ZealConfig!`resources` ) ) {
+			resource!( _R );
+		}
+		routeAssets();
 	}
 
-	alias void delegate ( HttpServerRequest, HttpServerResponse ) action;
-	
 	/**
 	 *
 	 */
@@ -129,7 +131,7 @@ class ZealRouter : UrlRouter {
 	/**
 	 *
 	 */
-	final @property typeof( this ) root ( string _Via = "any", _Dummy = void ) ( action cb ) {
+	final @property typeof( this ) root ( string _Via = "any", _Dummy = void ) ( Controller.Action cb ) {
 		mixin(Format!(
 			q{
 				%s( "/", cb );
@@ -149,34 +151,24 @@ class ZealRouter : UrlRouter {
 	 *
 	 */
 	final typeof( this ) routeAssets () {
-		auto assets = ZealConfig!`assets`;
+		static done = false;
 		
-		auto dir = assets ~ `styles/`;
-		foreach ( style; ZealConfig!`styles` ) {
-			compileSass( dir, style );
+		if ( !done ) {
+			auto assets = ZealConfig!`assets`;
+			
+			auto dir = assets ~ `styles/`;
+			foreach ( style; ZealConfig!`styles` ) {
+				compileSass( dir, style );
+			}
+			
+			get( `*`, serveStaticFiles( ZealConfig!`assets` ) );
+			
+			done = true;
 		}
-		
-		get( `*`, serveStaticFiles( ZealConfig!`assets` ) );
 		return this;
 	}
 	
 } // end class ZealRouter
-
-
-/**
- *
- */
-private template ConfigRoutes ( alias _List ) {
-	static if ( _List.length > 0 ) {
-		enum ConfigRoutes = 
-			Format!( `resource!"%s";`, _List[ 0 ] )
-			~ ConfigRoutes!( _List[ 1 .. $ ] )
-		;
-	}
-	else {
-		enum ConfigRoutes = "";
-	}
-}
 
 
 /**
@@ -192,3 +184,6 @@ private mixin template ConfigImports ( alias _List ) {
 	}
 }
 
+private mixin template ConfigImports () {
+	mixin ConfigImports!( ZealConfig!`resources` );
+}

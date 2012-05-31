@@ -20,46 +20,17 @@
     //  OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                         //
     ////////////////////////////////////////////////////////////////////////////////////////////
 
-module zeal.utils.singleton;
+module zeal.utils.tuple;
+
+import std.traits;
 
 
-mixin template Singleton () {
-	mixin .SingletonBase;
-}
-
-mixin template Singleton ( alias Ctor ) {
-	mixin .SingletonBase;
-	
-	protected this () {
-		static if ( is( typeof( super() ) ) ) {
-			super();
-		}
-		Ctor();
+template ArrayTuple ( alias Array, T... )
+if ( isArray!( typeof( Array ) ) ) {
+	static if ( Array.length == 0 ) {
+		alias T ArrayTuple;
 	}
-}
-
-mixin template Singleton ( string CtorImpl ) {
-	mixin .SingletonBase;
-	
-	protected this () {
-		static if ( is( typeof( super() ) ) ) {
-			super();
-		}
-		mixin( CtorImpl );
+	else {
+		alias ArrayTuple!( Array[ 1 .. $ ], T, Array[ 0 ] ) ArrayTuple;
 	}
-}
-
-private mixin template SingletonBase () {
-
-	static @property RealClass instance ( this RealClass ) () {
-		static RealClass self;
-		
-		if ( self is null ) {
-			self = new RealClass;
-		}
-		return self;
-	}
-	
-	alias instance opCall;
-	
 }

@@ -22,6 +22,7 @@
 
 module zeal.utils.keyword;
 
+
 bool isKeyword ( string s ) {
 	switch ( s ) {
 		case `abstract`:

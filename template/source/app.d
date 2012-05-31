@@ -28,7 +28,8 @@ static this () {
 	auto app = ZealApplication();
 	
 	with ( app.router ) {
-		//root!`RESOURCE.ACTION`;
+		//resource!`things`;
+		//root!`things.action`;
 	}
 }
 
